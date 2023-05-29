@@ -33,5 +33,3 @@ $ source ./env/bin/activate
 ```bash
 (env)$ python connection.py
 ```
-
-#Test

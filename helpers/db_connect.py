@@ -16,7 +16,7 @@ except Exception as e:
 
 try:
 	def _dbConnection():
-		cnxn = pyodbc.connect('DRIVER={ODBC Driver 17 for SQL Server};SERVER='+server+';UID='+username+';PWD='+password+';TrustServerCertificate=yes')
+		cnxn = pyodbc.connect('DRIVER={PostgreSQL ODBC Driver(ANSI)};SERVER='+server+';UID='+username+';PWD='+password+';TrustServerCertificate=yes')
 		return cnxn
 except Exception as e:
 	print("[Error] in (db_connect,_dbConnection) msg: ",str(e))
