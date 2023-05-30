@@ -1,34 +1,37 @@
-# Installation
+# PostgreSQL database I/O
+
+## Installation
 
 ```bash
 $ pip install -r requirements.txt 
 ```
 
-## Create environment file
-
+### Create environment file
 
 ```bash
  $ touch .env 
  ```
-## Define environment variables in the .env file 
+
+### Define environment variables in the .env file 
 
 ```bash
 $ nano .env
 ```
-```
+
+```plaintext
 server = '192.168.XXX.XXX'
 username = 'XXXXXXXX'
 password = 'XXXXXXXX'
 ```
 
-## Create and activate virtual environment
+### Create and activate virtual environment
 
 ```bash
 $ python -m venv env
 $ source ./env/bin/activate
 ```
 
-# Run
+## Run
 
 ```bash
 (env)$ python connection.py

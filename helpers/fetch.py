@@ -17,7 +17,7 @@ def _forFetchingJson(query,one=False):
 
 def _queryDB(database, id):
 	try:
-		daydiff = 0 # 0 for current day, 1 for yesterday, 2 for day before yesterday,...etc
+		daydiff = 1 # 0 for current day, 1 for yesterday, 2 for day before yesterday,...etc
 		delta = timedelta(days=daydiff)
 		d = (date.today()-delta).strftime("%Y%m%d") # Todays date
 		print("Date:  ",d)
