@@ -23,7 +23,7 @@ def _queryDB(database, id):
 		print("Date:  ",d)
 		print("ID ", id)
 		# Fetch all rows from database where date is today and maintradeid > id 
-		query = f"SELECT * FROM {database}.dbo.tbtradebook WHERE DateTime like '{d}%' AND MainTradeID > {id} "
+		query = f"SELECT * FROM {database} WHERE DateTime like '{d}%' AND MainTradeID > {id} "
 		r = _forFetchingJson(query)
 		df = pd.DataFrame(r)
 

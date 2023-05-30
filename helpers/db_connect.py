@@ -1,7 +1,7 @@
 import os
 import sys 
 from dotenv import load_dotenv
-import pyodbc
+import psycopg2
 
 load_dotenv()
 
@@ -10,13 +10,14 @@ try:
 	server = os.getenv('server')
 	username = os.getenv('username')
 	password = os.getenv('password')
+	database = "rms"
 except Exception as e:
 	print("[Error] in (db_connect) msg: ",str(e))
 	sys.exit(1)
 
 try:
 	def _dbConnection():
-		cnxn = pyodbc.connect('DRIVER={PostgreSQL ODBC Driver(ANSI)};SERVER='+server+';UID='+username+';PWD='+password+';TrustServerCertificate=yes')
+		cnxn = psycopg2.connect(host=server,database = database, user=username, password=password)
 		return cnxn
 except Exception as e:
 	print("[Error] in (db_connect,_dbConnection) msg: ",str(e))

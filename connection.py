@@ -94,7 +94,7 @@ async def main():
 		await m1()
 		await m2()
 		await m3()
-		await commit()
+		#await commit()
 
 loop = asyncio.get_event_loop()
 loop.create_task(main())
