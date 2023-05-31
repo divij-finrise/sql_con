@@ -6,22 +6,29 @@
 $ pip install -r requirements.txt 
 ```
 
-### Create environment file
+### Create yaml file
 
 ```bash
- $ touch .env 
+ $ touch config.yaml 
  ```
 
-### Define environment variables in the .env file 
+### Define environment variables in the yaml file
 
 ```bash
-$ nano .env
+$ nano config.yaml
 ```
 
-```plaintext
-server = '192.168.XXX.XXX'
-username = 'XXXXXXXX'
-password = 'XXXXXXXX'
+```yaml
+mssql-server:
+  ip: 192.168.XXX.XXX
+  username: XXXXXXXXX
+  password: XXXXXXXXX
+
+postgres-server: 
+  ip: 192.168.XXX.XXX
+  username : XXXXXXXXX
+  password : XXXXXXXXX
+  database : XXXXXXXXX
 ```
 
 ### Create and activate virtual environment

@@ -6,4 +6,5 @@ __pycache__/
 env/
 
 #secure files
-.env
+*.yaml
+utils/*.CSV

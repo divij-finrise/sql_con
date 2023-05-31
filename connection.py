@@ -1,8 +1,8 @@
 import pandas as pd
-from helpers.fetch import new_rows, latest_maintradeid
-from helpers.send import _send_NSEMCX, _send_NSEMCX_Many 
-from helpers.format import format_df
-from helpers.conversions import NSE_conversion, MCX_conversion
+from utils.fetch import new_rows, latest_maintradeid
+from utils.send import _send_NSEMCX, _send_NSEMCX_Many 
+from utils.format import format_df
+from utils.conversions import NSE_conversion, MCX_conversion
 import asyncio
 
 
@@ -93,9 +93,9 @@ async def main():
 		await n3()
 		await n4()
 		await n5()
-		await m1()
-		await m2()
-		await m3()
+		#await m1()
+		#await m2()
+		#await m3()
 		await commit()
 
 loop = asyncio.get_event_loop()
