@@ -80,11 +80,13 @@ async def m3():
 async def commit():
 	# Move forward only if new rows are found
 	if all( value.empty for value in d.values()):
-		print("SKIPPED COMMIT")	
+		print("## SKIPPED COMMIT ##")	
 	else:
 		df_merged = format_df(d)
-		#df_merged.to_excel("merged_file.csv")
-		_send_NSEMCX_Many(df_merged)
+		#drop committed data from individual dataframes
+		if _send_NSEMCX_Many(df_merged):
+			for database in databases:
+				d[database].drop(d[database].index, inplace=True)
 
 async def main():
 	while True:

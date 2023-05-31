@@ -18,16 +18,25 @@ def _sendRowMany(query, data):
 		con = postgres_dbConnection()
 		cur = con.cursor()
 
-		# cursor.mogrify() to insert multiple values
-		argument = ','.join (
-			cur.mogrify (" (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", i)
-					.decode('utf-8') for i in data)
-		cur.execute(query + (argument))
+		# Define the batch size
+		batch_size = 10000
+
+		# Split the data into batches of the defined size
+		data_batches = [data[i:i+batch_size] for i in range(0, len(data), batch_size)]
+
+		for data_batch in data_batches:
+			# Use cursor.mogrify() to insert multiple values
+			argument = ','.join(
+				cur.mogrify("(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", i)
+				.decode('utf-8') for i in data_batch)
+			cur.execute(query + argument)
+			print(f"###### SENT {len(data_batch)} rows to NSEMCXTrade  ######")
 		
 		con.commit()
 		cur.close()
 		con.close()
-		print(f"###### SENT {len(data)} rows to NSEMCXTrade  ######")
+		print(f"\n######## SENT {len(data)} rows to NSEMCXTrade  ########\n")
+		return True
 
 	except UniqueViolation as e:
 		print("\n[Error] in (helpers.send,_sendRowMany) msg: Duplicate rows already exist in NSEMCXTrade")
@@ -89,5 +98,6 @@ def _send_NSEMCX_Many(df_merged):
 		VALUES
 	"""
 
-	_sendRowMany(query, values)
+	if _sendRowMany(query, values):
+		return True
 	

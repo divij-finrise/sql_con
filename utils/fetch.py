@@ -50,13 +50,6 @@ def latest_maintradeid(database):
 		return 0
 	return row[0]
 
-def _getID( df):
-	#Get the Latest maintradeid from df
-	if df.empty:
-		# return 0 if no rows are present
-		return 0
-	else:
-		return df['maintradeid'].max()
 
 def new_rows(database, df_d):
 	#id = _getID(df_d) #Latest maintradeid in df_d
@@ -67,18 +60,3 @@ def new_rows(database, df_d):
 		return df # Return if new rows are found
 	else:
 		return None
-
-"""
-def update_df(database, id=0):
-	df = _queryDB(database, id)
-	print(f"{database}- Length ",len(df))
-	if not df.empty:
-		try:
-			print(f"{database}- Concatenate new rows to df")
-			df_merged = pd.concat([df_merged,df], axis=0, ignore_index = True)
-			
-		except:
-			df_merged = df
-		id = _getID(df_merged)
-		print(f"{database}- ID IS : {id}")
-"""
