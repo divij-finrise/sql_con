@@ -66,17 +66,3 @@ def new_rows(database, df_d):
 	else:
 		return None
 
-"""
-def update_df(database, id=0):
-	df = _queryDB(database, id)
-	print(f"{database}- Length ",len(df))
-	if not df.empty:
-		try:
-			print(f"{database}- Concatenate new rows to df")
-			df_merged = pd.concat([df_merged,df], axis=0, ignore_index = True)
-			
-		except:
-			df_merged = df
-		id = _getID(df_merged)
-		print(f"{database}- ID IS : {id}")
-"""
