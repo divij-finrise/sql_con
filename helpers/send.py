@@ -1,4 +1,5 @@
 from helpers.db_connect import _dbConnection
+from psycopg2.errors import UniqueViolation
 
 def _sendRow(query, data):
 	try:
@@ -10,7 +11,7 @@ def _sendRow(query, data):
 		con.close()
 	except Exception as e :
 		print(query)
-		print("[Error] in (helpers.send,_sendRow) msg: ",str(e))
+		print("\n[Error] in (helpers.send,_sendRow) msg: ",str(e))
 
 def _sendRowMany(query, data):
 	try:
@@ -26,10 +27,14 @@ def _sendRowMany(query, data):
 		con.commit()
 		cur.close()
 		con.close()
+		print(f"###### SENT {len(data)} rows to NSEMCXTrade  ######")
+
+	except UniqueViolation as e:
+		print("\n[Error] in (helpers.send,_sendRowMany) msg: Duplicate rows already exist in NSEMCXTrade")
 
 	except Exception as e :
 		print(query)
-		print("[Error] in (helpers.send,_sendRowMany) msg: ",str(e))
+		print("\n[Error] in (helpers.send,_sendRowMany) msg: ",str(e))
 
 def _send_NSEMCX(df_merged):
 	# Writing to NSEMCX row by row
@@ -85,5 +90,4 @@ def _send_NSEMCX_Many(df_merged):
 	"""
 
 	_sendRowMany(query, values)
-
 	

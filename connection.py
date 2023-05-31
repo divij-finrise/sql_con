@@ -1,5 +1,5 @@
 import pandas as pd
-from helpers.fetch import new_rows
+from helpers.fetch import new_rows, latest_maintradeid
 from helpers.send import _send_NSEMCX, _send_NSEMCX_Many 
 from helpers.format import format_df
 from helpers.conversions import NSE_conversion, MCX_conversion
@@ -78,10 +78,13 @@ async def m3():
 	await asyncio.sleep(sleep_time)
 
 async def commit():
-	df_merged = format_df(d)
-	#df_merged.to_excel("merged_file.csv")
-	_send_NSEMCX_Many(df_merged)
-	print(f"################ SENT to NSEMCX: {len(df_merged)} ################")
+	# Move forward only if new rows are found
+	if all( value.empty for value in d.values()):
+		print("SKIPPED COMMIT")	
+	else:
+		df_merged = format_df(d)
+		#df_merged.to_excel("merged_file.csv")
+		_send_NSEMCX_Many(df_merged)
 
 async def main():
 	while True:
