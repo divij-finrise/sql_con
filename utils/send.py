@@ -30,12 +30,12 @@ def _sendRowMany(query, data):
 				cur.mogrify("(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", i)
 				.decode('utf-8') for i in data_batch)
 			cur.execute(query + argument)
-			print(f"###### SENT {len(data_batch)} rows to NSEMCXTrade  ######")
+			print(f"\n# SENT BATCH OF {len(data_batch)} rows to NSEMCXTrade  #")
 		
 		con.commit()
 		cur.close()
 		con.close()
-		print(f"\n######## SENT {len(data)} rows to NSEMCXTrade  ########\n")
+		print(f"\n### SENT TOTAL {len(data)} rows to NSEMCXTrade  ###\n")
 		return True
 
 	except UniqueViolation as e:

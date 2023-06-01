@@ -11,7 +11,7 @@ d={} # Initialsing d for list of
 for database in databases:
 	d[database] = pd.DataFrame()
 
-sleep_time = 2 #How many seconds should a function sleep
+sleep_time = 4##### #How many seconds should a function sleep
 
 async def n1():
 	db_name = databases[0] 
@@ -80,7 +80,7 @@ async def m3():
 async def commit():
 	# Move forward only if new rows are found
 	if all( value.empty for value in d.values()):
-		print("## SKIPPED COMMIT ##")	
+		print("\n############# SKIPPED COMMIT #############\n")	
 	else:
 		df_merged = format_df(d)
 		#drop committed data from individual dataframes

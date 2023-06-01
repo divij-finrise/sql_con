@@ -1,9 +1,8 @@
 import pandas as pd
-from datetime import date, timedelta
 
 from utils.db_connect_mssql import mssql_dbConnection
 from utils.db_connect_postgres import postgres_dbConnection
-
+from utils.util import TradeDate
 from utils.format import format_sender_id
 
 def _forFetchingJson(query,one=False):
@@ -20,11 +19,8 @@ def _forFetchingJson(query,one=False):
 
 def _queryDB(database, id):
 	try:
-		# REMOVE DAY DIFF AND DELTA IN PROD
-		daydiff = 0 # 0 for current day, 1 for yesterday, 2 for day before yesterday,...etc
-		delta = timedelta(days=daydiff)
-		d = (date.today()-delta).strftime("%Y%m%d") # Todays date
-
+		
+		d =  TradeDate()
 		# Fetch all rows from database where date is today and maintradeid > id 
 		query = f"SELECT * FROM {database}.dbo.tbtradebook WHERE DateTime like '{d}%' AND MainTradeID > {id}; "
 		r = _forFetchingJson(query)
@@ -40,15 +36,20 @@ def _queryDB(database, id):
 		return None
 
 def latest_maintradeid(database):
-	#Get the Latest maintradeid of a sender from NSEMCXTrade
-	cur = postgres_dbConnection().cursor()
-	query = f"SELECT MAINTRADEID FROM NSEMCXTrade WHERE SENDER = '{format_sender_id(database)}' ORDER BY MAINTRADEID DESC LIMIT 1;"
-	cur.execute(query)
-	row = cur.fetchone()
-	if row is None:
-		print(f"[Warning] NSEMCXTrade DOES NOT HAVE ANY ROWS FROM {database}")
-		return 0
-	return row[0]
+	try:
+		#Get the Latest maintradeid of a sender from NSEMCXTrade
+		cur = postgres_dbConnection().cursor()
+		query = f"SELECT MAINTRADEID FROM NSEMCXTrade WHERE datetime LIKE '{TradeDate()}%' AND SENDER = '{format_sender_id(database)}' ORDER BY MAINTRADEID DESC LIMIT 1;"
+		cur.execute(query)
+		row = cur.fetchone()
+		if row is None:
+			print(f"[Warning] NSEMCXTrade DOES NOT HAVE ANY ROWS FROM {database}")
+			return 0
+		return row[0]
+	except Exception as e:
+		print(query)
+		print("\n[Error] in (helpers.fetch,latest_maintradeid`) msg: ",str(e))
+		return None
 
 
 def new_rows(database, df_d):
