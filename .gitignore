@@ -1,6 +1,8 @@
+# Keep this file
+!.keepdir
 # Byte-compiled / optimized / DLL files
 __pycache__/
-
+.vscode/
 
 # Distribution / packaging
 env/
@@ -11,3 +13,4 @@ test.py
 new.csv 
 *.csv
 *.CSV
+*.csv#
