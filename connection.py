@@ -1,6 +1,6 @@
 import pandas as pd
-from utils.fetch import new_rows, latest_maintradeid
-from utils.send import _send_NSEMCX, _send_NSEMCX_Many 
+from utils.fetch import new_rows
+from utils.send import _send_NSEMCX_Many 
 from utils.format import format_df
 from utils.conversions import NSE_conversion, MCX_conversion
 import asyncio
@@ -11,82 +11,83 @@ d={} # Initialsing d for list of
 for database in databases:
 	d[database] = pd.DataFrame()
 
-sleep_time = 4##### #How many seconds should a function sleep
+sleep_time = 1 # How many seconds should a function sleep
 
 async def n1():
 	db_name = databases[0] 
 	# Fetch new rows
-	new_rows_df = new_rows(db_name,d[db_name])
-	# Concatenate new rows
-	d[db_name] = pd.concat([d[db_name],new_rows_df], axis=0, ignore_index = True)
+	new_rows_df = new_rows(db_name)
+
+	conv_rows_df = NSE_conversion(new_rows_df)
+	d[db_name] = conv_rows_df
 	await asyncio.sleep(sleep_time)
 
 async def n2():
 	db_name = databases[1] 
 	# Fetch new rows
-	new_rows_df = new_rows(db_name,d[db_name])
-	# Concatenate new rows
-	d[db_name] = pd.concat([d[db_name],new_rows_df], axis=0, ignore_index = True)
+	new_rows_df = new_rows(db_name)
+	conv_rows_df = NSE_conversion(new_rows_df)
+	d[db_name] = conv_rows_df
 	await asyncio.sleep(sleep_time)
 
 async def n3():
 	db_name = databases[2] 
 	# Fetch new rows
-	new_rows_df = new_rows(db_name,d[db_name])
-	# Concatenate new rows
-	d[db_name] = pd.concat([d[db_name],new_rows_df], axis=0, ignore_index = True)
+	new_rows_df = new_rows(db_name)
+	conv_rows_df = NSE_conversion(new_rows_df)
+	d[db_name] = conv_rows_df
 	await asyncio.sleep(sleep_time)
 
 async def n4():
 	db_name = databases[3] 
 	# Fetch new rows
-	new_rows_df = new_rows(db_name,d[db_name])
-	# Concatenate new rows
-	d[db_name] = pd.concat([d[db_name],new_rows_df], axis=0, ignore_index = True)
+	new_rows_df = new_rows(db_name)
+	conv_rows_df = NSE_conversion(new_rows_df)
+	d[db_name] = conv_rows_df
 	await asyncio.sleep(sleep_time)
 
 async def n5():
 	db_name = databases[4] 
 	# Fetch new rows
-	new_rows_df = new_rows(db_name,d[db_name])
-	# Concatenate new rows
-	d[db_name] = pd.concat([d[db_name],new_rows_df], axis=0, ignore_index = True)
+	new_rows_df = new_rows(db_name)
+	conv_rows_df = NSE_conversion(new_rows_df)
+	d[db_name] = conv_rows_df
 	await asyncio.sleep(sleep_time)
 
 async def m1():
 	db_name = databases[5] 
 	# Fetch new rows
-	new_rows_df = new_rows(db_name,d[db_name])
-	# Concatenate new rows
-	d[db_name] = pd.concat([d[db_name],new_rows_df], axis=0, ignore_index = True)
+	new_rows_df = new_rows(db_name)
+	conv_rows_df = MCX_conversion(new_rows_df)
+	d[db_name] = conv_rows_df
 	await asyncio.sleep(sleep_time)
 
 async def m2():
 	db_name = databases[6] 
 	# Fetch new rows
-	new_rows_df = new_rows(db_name,d[db_name])
-	# Concatenate new rows
-	d[db_name] = pd.concat([d[db_name],new_rows_df], axis=0, ignore_index = True)
+	new_rows_df = new_rows(db_name)
+	conv_rows_df = MCX_conversion(new_rows_df)
+	d[db_name] = conv_rows_df
 	await asyncio.sleep(sleep_time)
 
 async def m3():
 	db_name = databases[7] 
 	# Fetch new rows
-	new_rows_df = new_rows(db_name,d[db_name])
-	# Concatenate new rows
-	d[db_name] = pd.concat([d[db_name],new_rows_df], axis=0, ignore_index = True)
+	new_rows_df = new_rows(db_name)
+	conv_rows_df = MCX_conversion(new_rows_df)
+	d[db_name] = conv_rows_df
 	await asyncio.sleep(sleep_time)
 
 async def commit():
 	# Move forward only if new rows are found
-	if all( value.empty for value in d.values()):
-		print("\n############# SKIPPED COMMIT #############\n")	
+	if all( value.empty if value is not None else True for value in d.values()):
+		print("\n############## SKIPPED COMMIT ##############\n")	
 	else:
 		df_merged = format_df(d)
 		#drop committed data from individual dataframes
 		if _send_NSEMCX_Many(df_merged):
 			for database in databases:
-				d[database].drop(d[database].index, inplace=True)
+				d[database] = pd.DataFrame()
 
 async def main():
 	while True:
