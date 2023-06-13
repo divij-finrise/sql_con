@@ -1,3 +1,5 @@
+"""" Defining all send functions"""
+from utils.util import config
 from utils.db_connect_postgres import postgres_dbConnection
 from psycopg2.errors import UniqueViolation
 
@@ -16,12 +18,12 @@ def _sendRow(query, data):
 
 
 def _sendRowMany(query, data):
+    dest_db = config("setup","destination_database")
     try:
         con = postgres_dbConnection()
         cur = con.cursor()
 
-        # Define the batch size
-        batch_size = 10000
+        batch_size = config("setup","batch_size")
 
         # Split the data into batches of the defined size
         data_batches = [
@@ -38,18 +40,18 @@ def _sendRowMany(query, data):
                 for i in data_batch
             )
             cur.execute(query + argument)
-            print(f"\n# SENT BATCH OF {len(data_batch)} rows to NSEMCXTradeConv  #")
+            print(f"\n# SENT BATCH OF {len(data_batch)} rows to {dest_db}  #")
 
         con.commit()
         cur.close()
         con.close()
-        print(f"\n### SENT TOTAL {len(data)} rows to NSEMCXTradeConv  ###\n")
+        print(f"\n### SENT TOTAL {len(data)} rows to {dest_db}  ###\n")
         return True
 
     except UniqueViolation as e:
-        print(data)
+        print(query)
         print(
-            "\n[Error] in (utils.send,_sendRowMany) msg: Duplicate rows already exist in NSEMCXTradeConv"
+            f"\n[Error] in (utils.send,_sendRowMany) msg: Duplicate rows already exist in {dest_db}"
         )
 
     except Exception as e:
@@ -58,9 +60,10 @@ def _sendRowMany(query, data):
 
 
 def _send_NSEMCX_Many(df_merged):
+    dest_db = config("setup","destination_database")
     values = [tuple(row) for row in df_merged.to_numpy()]
-    query = """
-		INSERT INTO NSEMCXtradeConv (
+    query = f"""
+		INSERT INTO {dest_db} (
 			inid,sqldatetime,datetime,tradenum,ordernum,userid,
 			terminalid,ctclid,algoid,accountcode,membercode,
 			scripcode,exchange,opttype,expirydate,strikeprice,

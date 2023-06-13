@@ -1,21 +1,18 @@
 import asyncio
 import time
-import yaml
 import pandas as pd
-from utils.util import log_trades_to_csv
+from utils.util import log_trades_to_csv, config
 from utils.fetch import new_rows
 from utils.send import _send_NSEMCX_Many
 from utils.format import format_df
 from utils.conversions import NSE_conversion, MCX_conversion
 
-with open("config.yaml", "r", encoding="UTF-8") as file:
-    config = yaml.safe_load(file)
-databases = config["setup"]["databases"]
+databases = config("setup","databases")
 d = {}  # Initialsing d for list of
 for database in databases:
     d[database] = pd.DataFrame()
 
-SLEEP_TIME = config["setup"]["sleep_time"]
+SLEEP_TIME = config("setup","sleep_time")
 
 
 async def n1():

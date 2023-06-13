@@ -2,7 +2,7 @@ import pandas as pd
 
 from utils.db_connect_mssql import mssql_dbConnection
 from utils.db_connect_postgres import postgres_dbConnection
-from utils.util import TradeDate
+from utils.util import TradeDate, config
 from utils.format import format_sender_id
 
 
@@ -40,15 +40,16 @@ def _queryDB(database, id):
 
 
 def latest_maintradeid(database):
+    dest_db = config("setup","destination_database")
     try:
-        # Get the Latest maintradeid of a sender from NSEMCXTradeConv
+        # Get the Latest maintradeid of a sender from dest_db
         cur = postgres_dbConnection().cursor()
-        query = f"""SELECT MAINTRADEID FROM NSEMCXTradeConv WHERE datetime LIKE '{TradeDate()}%' 
+        query = f"""SELECT MAINTRADEID FROM {dest_db} WHERE datetime LIKE '{TradeDate()}%' 
 					AND SENDER = '{format_sender_id(database)}' ORDER BY MAINTRADEID DESC LIMIT 1;"""
         cur.execute(query)
         row = cur.fetchone()
         if row is None:
-            print(f"[Warning] NSEMCXTradeConv DOES NOT HAVE ANY ROWS FROM {database}")
+            print(f"[Warning] {dest_db} DOES NOT HAVE ANY ROWS FROM {database}")
             return 0
         return row[0]
     except Exception as e:
