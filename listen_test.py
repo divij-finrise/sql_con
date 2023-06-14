@@ -1,7 +1,7 @@
 import pandas as pd
 import json
 import threading
-from utils.db_connect import db_connection_src
+from utils.db_connect import DatabaseConnection
 
 # Function to process the received notification
 def process_notification(conn):
@@ -41,7 +41,8 @@ def process_notification(conn):
     notification_thread.start()
 
 # Connect to the database
-conn = db_connection_src()
+db_connection = DatabaseConnection()
+conn = db_connection.db_connection_src()
 
 # Start the notification listener thread
 notification_thread = threading.Thread(target=process_notification, args=(conn,))
