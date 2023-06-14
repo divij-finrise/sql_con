@@ -1,3 +1,4 @@
+"""Main file to run"""
 import threading
 from utils.db_connect import db_connection_src
 from utils.receive import process_notification

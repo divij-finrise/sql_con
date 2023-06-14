@@ -6,44 +6,43 @@
 pip install -r requirements.txt 
 ```
 
-### Create yaml file
+### Create .env file
 
 ```bash
- touch config.yaml 
+ touch .env
  ```
 
-### Define environment variables in the yaml file
+### Define environment variables
 
 ```bash
-nano config.yaml
+nano .env
 ```
 
 Paste and fill the following details in the config file
 
-```yaml
-# MSSQL server connection details
-mssql-server:
-  ip: 192.168.XXX.XXX
-  username: XXXXXXXXX
-  password: XXXXXXXXX
-  driver : ODBC Driver 17 for SQL Server # Replace with your mssql device driver
-  database : XXXXXXXX
+```text
+# MSSQL server source connection details
+src_ip = 192.168.XXX.XXX
+src_username = XXXXXXXXX
+src_password = XXXXXXXXX
+src_driver = ODBC Driver 17 for SQL Server # Replace with your local mssql driver name
+src_database = XXXXXXXXX
 
-# PostgreSQL server connection details
-postgres-server: 
-  ip: 192.168.XXX.XXX
-  username : XXXXXXXXX
-  password : XXXXXXXXX
-  database : XXXXXXXXX
+# MSSQL server destination connection details
+dst_ip= 192.168.XXX.XXX
+dst_username= XXXXXXXXX
+dst_password= XXXXXXXXX
+dst_driver = ODBC Driver 17 for SQL Server # Replace with your local mssql driver name
+dst_database = XXXXXXXX
 
-setup:
-  sleep_time : 1 # How many seconds should an async function sleep
-  batch_size : 1000 #Amount of trades to send to server
-  conversion_file_location : /XXXXX.CSV
+#Setup
+sleep_time = 1 # How many seconds should an async function sleep
+batch_size = 1000 #Amount of trades to send to server
+conversion_file_location = /XXXXXXXX.CSV
 
-log-file-location:
-  # location for storing daily trade logs 
-  trades : logs/ # end with '/'
+#Logs
+# location for storing daily trade logs 
+trades-log-location = logs/ # end with '/'
 ```
 
 ### Create and activate virtual environment

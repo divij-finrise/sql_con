@@ -2,23 +2,17 @@
 import os
 from datetime import date, timedelta
 import sys
-import yaml
+from dotenv import load_dotenv
 import pandas as pd
 
-def config(section, value):
-    """ Import variables from config.yaml file """
-    with open("config.yaml", "r", encoding="UTF-8") as file:
-        try:
-            config_file = yaml.safe_load(file)
-        except Exception as e:
-            print("[Error] in (utils.util, config) msg: ", str(e))
-            print(section+" "+value)
-            sys.exit(1)
-    return config_file[section][value]
+def config(value):
+    load_dotenv()
+    """ Import variables from env file """
+    return os.getenv(value)
 
 def log_trades_to_csv(trades_df):
     """log daily trades into their individual csv file for faster fetch"""
-    file_location = config("log-file-location","trades")
+    file_location = config("trades-log-location")
     if trades_df is not None:
         address = f"{file_location}{date.today()}-tradelog.csv"
         trades_df.to_csv(
@@ -27,7 +21,7 @@ def log_trades_to_csv(trades_df):
             header=False,
             index=False,
         )
-        print(f"Written {len(trades_df)} rows to {address}...\n")
+        print(f"Done writing {len(trades_df)} row(s) to {address}...\n")
 
 def format_df(df):
     try:
@@ -52,7 +46,7 @@ def format_df(df):
         return None
 
 def conversion(trades_df):
-    conversion_file = config('setup', 'conversion_file_location')
+    conversion_file = config("conversion_file_location")
     if trades_df is None:
         return None
     try:

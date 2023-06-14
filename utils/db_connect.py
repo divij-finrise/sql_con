@@ -5,10 +5,10 @@ from utils.util import config
 
 def db_connection_src():
     '''Source server connection details'''
-    server = config("mssql-server-src","ip")
-    username = config("mssql-server-src","username")
-    password = config("mssql-server-src","password")
-    driver = config("mssql-server-src","driver")
+    server = config("src_ip")
+    username = config("src_username")
+    password = config("src_password")
+    driver = config("src_driver")
     try:
         cnxn = pyodbc.connect(
             "DRIVER="
@@ -29,10 +29,10 @@ def db_connection_src():
 
 def db_connection_dst():
     '''Destination server connection details'''
-    server = config("mssql-server-src","ip")
-    username = config("mssql-server-src","username")
-    password = config("mssql-server-src","password")
-    driver = config("mssql-server-src","driver")
+    server = config("dst_ip")
+    username = config("dst_username")
+    password = config("dst_password")
+    driver = config("dst_driver")
     try:
         cnxn = pyodbc.connect(
             "DRIVER="

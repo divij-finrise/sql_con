@@ -9,6 +9,7 @@ __pycache__/
 env/
 
 #secure files
+.env
 *.yaml
 test.py 
 new.csv 
