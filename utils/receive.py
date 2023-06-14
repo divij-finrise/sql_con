@@ -1,19 +1,28 @@
-import pandas as pd
+""" Receiving notifications with data from mssql server and 
+perform conversion, logging and send to queue for db_write"""
 import json
+import time
+import pyodbc
+import pandas as pd
 import threading
-from utils.db_connect import db_connection_src
+from utils.util import conversion, format_df, config, log_trades_to_csv
 
-# Function to process the received notification
+SLEEP_TIME = config("setup","sleep_time")
+
 def process_notification(conn):
+    print("--------------------NEW THREAD--------------------")
     with conn.cursor() as cursor:
-
+        src_database = config('mssql-server-src', 'database')
         # Receive the notification
+        query = f"""WAITFOR (RECEIVE TOP(1) message_type_name, message_body 
+                FROM {src_database}.dbo.NotificationQueue), TIMEOUT 1000;"""
         try:
-            cursor.execute('WAITFOR (RECEIVE TOP(1) message_type_name, message_body FROM MCXRMS.dbo.NotificationQueue), TIMEOUT 1000;')
+            cursor.execute(query)
         except:
-            print("ERROR EXECUTING WAITFOR COMMAND. RESTARTING NOTIFICATION QUEUE")
+            # REMOVE IN PRODUCTION
+            print("ERROR EXECUTING WAITFOR COMMAND. RESTARTING NOTIFICATION QUEUE", str(e))
             cursor.execute('ALTER QUEUE dbo.NotificationQueue WITH STATUS = ON;')
-            cursor.execute('WAITFOR (RECEIVE TOP(1) message_type_name, message_body FROM MCXRMS.dbo.NotificationQueue), TIMEOUT 1000;')
+            cursor.execute(query)
         row = cursor.fetchone()
 
         # Process the notification
@@ -29,26 +38,21 @@ def process_notification(conn):
                 notification_data = json.loads(json_string)
                 #convert json to dataframe
                 df = pd.DataFrame(notification_data)
-                print(df)
+                #print(df)
+                clean_df = format_df(df)
+                #print("####################")
+                #print(clean_df)
+                conv_df = conversion(clean_df)
+                #print("####################")
+                print(conv_df)
+                log_trades_to_csv(conv_df)
+
 
             except json.JSONDecodeError as e:
                 print("JSON ERROR  ", e)
         else:
             print("#################### NO NEW ROW ####################")
-    
+    time.sleep(SLEEP_TIME)
     # Start a new thread for the next notification
     notification_thread = threading.Thread(target=process_notification, args=(conn,))
     notification_thread.start()
-
-# Connect to the database
-conn = db_connection_src()
-
-# Start the notification listener thread
-notification_thread = threading.Thread(target=process_notification, args=(conn,))
-notification_thread.start()
-
-# Join the notification listener thread with the main thread (optional)
-notification_thread.join()
-
-#Close the database connection
-#conn.close()

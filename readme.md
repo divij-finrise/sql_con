@@ -1,4 +1,4 @@
-# PostgreSQL database I/O
+# Trade Transfer with MSSQL Notify
 
 ## Installation
 
@@ -27,6 +27,7 @@ mssql-server:
   username: XXXXXXXXX
   password: XXXXXXXXX
   driver : ODBC Driver 17 for SQL Server # Replace with your mssql device driver
+  database : XXXXXXXX
 
 # PostgreSQL server connection details
 postgres-server: 
@@ -36,13 +37,9 @@ postgres-server:
   database : XXXXXXXXX
 
 setup:
-  # To get trades from a different date
-  # 0 for current day, 1 for yesterday, 2 for day-before-yesterday,...etc
-  date-difference : 0
-  databases :  ["NSES1", "NSES2", "NSES3", "NSES4", "NSES5", "MCXS1", "MCXS2", "MCXS3"] # databases to connect to in mssql server
-  destination_database : NSEMCXTradeConv
   sleep_time : 1 # How many seconds should an async function sleep
   batch_size : 1000 #Amount of trades to send to server
+  conversion_file_location : /XXXXX.CSV
 
 log-file-location:
   # location for storing daily trade logs 
