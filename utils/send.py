@@ -23,7 +23,7 @@ def _sendRowMany(query, data):
         con = postgres_dbConnection()
         cur = con.cursor()
 
-        batch_size = config("setup","batch_size")
+        batch_size = int(config("batch_size"))
 
         # Split the data into batches of the defined size
         data_batches = [

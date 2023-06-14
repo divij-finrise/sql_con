@@ -7,12 +7,12 @@ import pandas as pd
 import threading
 from utils.util import conversion, format_df, config, log_trades_to_csv
 
-SLEEP_TIME = config("setup","sleep_time")
+SLEEP_TIME = int(config("sleep_time"))
 
 def process_notification(conn):
     print("--------------------NEW THREAD--------------------")
     with conn.cursor() as cursor:
-        src_database = config('mssql-server-src', 'database')
+        src_database = config("src_database")
         # Receive the notification
         query = f"""WAITFOR (RECEIVE TOP(1) message_type_name, message_body 
                 FROM {src_database}.dbo.NotificationQueue), TIMEOUT 1000;"""
